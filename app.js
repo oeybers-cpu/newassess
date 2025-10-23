@@ -1,29 +1,156 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const statusMessage = document.getElementById('statusMessage');
-    const feedbackArea = document.getElementById('feedback');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const saveBtn = document.getElementById('saveBtn');
+const clearBtn = document.getElementById('clearBtn');
 
-    function adjustTextareaHeight(textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = textarea.scrollHeight + 'px';
+const assignmentFileInput = document.getElementById('assignmentFile');
+const assignmentTextInput = document.getElementById('assignmentText');
+const rubricFileInput = document.getElementById('rubricFile');
+const manualCriteriaInput = document.getElementById('manualCriteria');
+
+const feedbackArea = document.getElementById('feedback');
+const statusMessage = document.getElementById('statusMessage');
+
+// --- 2. DEFINE HELPER FUNCTIONS ---
+
+/**
+ * Reads the content of a file as plain text.
+ * @param {File} file The file to read.
+ * @returns {Promise<string>} A promise that resolves with the file's text content.
+ */
+function readFileAsText(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsText(file);
+    });
+}
+
+/**
+ * Adjusts the height of a textarea to fit its content.
+ * @param {HTMLTextAreaElement} textarea The textarea element.
+ */
+function adjustTextareaHeight(textarea) {
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+}
+
+// --- 3. ADD EVENT LISTENERS ---
+
+// Listener for the main "Analyze" button
+analyzeBtn.addEventListener('click', async () => {
+    let assignmentContent = assignmentTextInput.value.trim();
+    const assignmentFile = assignmentFileInput.files[0];
+    let criteriaContent = manualCriteriaInput.value.trim();
+    const rubricFile = rubricFileInput.files[0];
+
+    // --- A. GET CONTENT FROM FILES IF PROVIDED ---
+    try {
+        if (assignmentFile) {
+            statusMessage.textContent = "Reading assignment file...";
+            assignmentContent = await readFileAsText(assignmentFile);
+        }
+        if (rubricFile) {
+            statusMessage.textContent = "Reading rubric file...";
+            criteriaContent = await readFileAsText(rubricFile);
+        }
+    } catch (error) {
+        statusMessage.textContent = "Error: Could not read the uploaded file.";
+        statusMessage.className = "status-message status-error";
+        return;
     }
 
-    adjustTextareaHeight(feedbackArea);
+    if (!assignmentContent) {
+        statusMessage.textContent = "Error: Please provide an assignment (upload file or paste text).";
+        statusMessage.className = "status-message status-error";
+        return;
+    }
 
-    // The new, real API call logic
-    analyzeBtn.addEventListener('click', async function() {
-        // ... all the code for the real API call ...
-    });
+    // --- B. SET LOADING STATE ON THE UI ---
+    analyzeBtn.disabled = true;
+    saveBtn.disabled = true;
+    clearBtn.disabled = true;
+    analyzeBtn.textContent = 'Analyzing...';
+    statusMessage.textContent = "Agent is processing the assignment... this may take a moment.";
+    statusMessage.className = "status-message";
+    feedbackArea.value = ""; // Clear previous feedback
 
-    // The save button logic
-    saveBtn.addEventListener('click', function() {
-        // ...
-    });
+    // --- C. MAKE THE REAL API CALL ---
+    try {
+        // IMPORTANT: Replace 'your-agent-endpoint' with the actual name of your Netlify Function file.
+        // For example, if your file is named 'netlify/functions/assess.js', you would use '/.netlify/functions/assess'.
+        const response = await fetch('/.netlify/functions/your-agent-endpoint', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                assignmentContent: assignmentContent,
+                criteria: criteriaContent
+            }),
+        });
 
-    // The clear button logic
-    clearBtn.addEventListener('click', function() {
-        // ...
-    });
+        const data = await response.json();
+
+        if (!response.ok) {
+            // If the API returned an error (e.g., 4xx, 5xx), use the error message from the API
+            throw new Error(data.error || `API Error: ${response.statusText}`);
+        }
+
+        const realFeedback = data.reply; // Assuming your agent returns a 'reply' property
+
+        // --- D. UPDATE UI WITH REAL DATA ---
+        feedbackArea.value = realFeedback;
+        adjustTextareaHeight(feedbackArea);
+        statusMessage.textContent = "Analysis complete! Feedback has been generated by the agent.";
+        statusMessage.className = "status-message status-success";
+
+    } catch (error) {
+        // This will catch network errors or errors thrown from the API response
+        statusMessage.textContent = `Error: ${error.message}`;
+        statusMessage.className = "status-message status-error";
+    } finally {
+        // --- E. RESET THE UI ---
+        analyzeBtn.disabled = false;
+        saveBtn.disabled = false;
+        clearBtn.disabled = false;
+        analyzeBtn.textContent = 'Analyze Assignment';
+    }
 });
+
+// Listener for the "Save" button
+saveBtn.addEventListener('click', () => {
+    const feedback = feedbackArea.value.trim();
+    if (!feedback) {
+        statusMessage.textContent = "Error: No feedback to save.";
+        statusMessage.className = "status-message status-error";
+        return;
+    }
+    
+    // This creates a downloadable .txt file with the feedback
+    const blob = new Blob([feedback], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'assessment-feedback.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    statusMessage.textContent = "Feedback has been saved as a .txt file.";
+    statusMessage.className = "status-message status-success";
+});
+
+// Listener for the "Clear" button
+clearBtn.addEventListener('click', () => {
+    assignmentFileInput.value = '';
+    assignmentTextInput.value = '';
+    rubricFileInput.value = '';
+    manualCriteriaInput.value = '';
+    feedbackArea.value = '';
+    adjustTextareaHeight(feedbackArea);
+    statusMessage.textContent = "All fields cleared. Ready for new assessment.";
+    statusMessage.className = "status-message";
+});
+
+// Automatically adjust textareas when user types
+assignmentTextInput.addEventListener('input', () => adjustTextareaHeight(assignmentTextInput));
+manualCriteriaInput.addEventListener('input', () => adjustTextareaHeight(manualCriteriaInput));
+feedbackArea.addEventListener('input', () => adjustTextareaHeight(feedbackArea));
