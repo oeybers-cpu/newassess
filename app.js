@@ -1,3 +1,6 @@
+// This code goes in a new file named app.js
+
+// --- 1. GET ALL THE ELEMENTS ---
 const analyzeBtn = document.getElementById('analyzeBtn');
 const saveBtn = document.getElementById('saveBtn');
 const clearBtn = document.getElementById('clearBtn');
@@ -77,18 +80,24 @@ analyzeBtn.addEventListener('click', async () => {
 
     // --- C. MAKE THE REAL API CALL ---
     try {
-        // IMPORTANT: Replace 'your-agent-endpoint' with the actual name of your Netlify Function file.
-        // For example, if your file is named 'netlify/functions/assess.js', you would use '/.netlify/functions/assess'.
-        const response = await fetch('/.netlify/functions/your-agent-endpoint', {
+        // ==================================================================
+        // === THIS IS THE LINE THAT WAS CORRECTED ==========================
+        // ==================================================================
+        const response = await fetch('/.netlify/functions/chat', { // Replaced placeholder with 'chat'
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 assignmentContent: assignmentContent,
                 criteria: criteriaContent
+                // NOTE: Your 'chat.js' function will need to be updated
+                // to handle these new properties in the request body.
             }),
         });
 
-        const data = await response.json();
+        // This is a temporary debugging step from our last conversation.
+        // It's useful to keep it for now.
+        const rawText = await response.text();
+        const data = JSON.parse(rawText);
 
         if (!response.ok) {
             // If the API returned an error (e.g., 4xx, 5xx), use the error message from the API
