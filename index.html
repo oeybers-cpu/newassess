@@ -259,11 +259,6 @@
                 <label for="assignment">Student Assignment</label>
                 <input type="file" id="assignment" accept=".txt,.doc,.docx">
             </div>
-            
-            <div class="upload-input">
-                <label for="rubric">Course Rubric (optional)</label>
-                <input type="file" id="rubric" accept=".txt,.pdf,.doc,.docx">
-            </div>
         </div>
         
         <div class="assessment-support">
@@ -317,7 +312,6 @@
             // Simulate analysis functionality
             analyzeBtn.addEventListener('click', function() {
                 const assignmentFile = document.getElementById('assignment').files[0];
-                const rubricFile = document.getElementById('rubric').files[0];
                 
                 if (!assignmentFile) {
                     statusMessage.textContent = "Error: Please upload a student assignment file";
@@ -325,8 +319,8 @@
                     return;
                 }
                 
-                // Generate 10-sentence coherent paragraph
-                const feedbackParagraph = [
+                // Generate 10-sentence coherent paragraph (exactly 10 sentences)
+                const feedbackText = [
                     "The assignment demonstrates a clear understanding of the topic with a well-defined thesis statement.",
                     "However, the thesis could be strengthened with more precise academic framing and specific claims.",
                     "Evidence integration shows relevance but lacks critical analysis of sources.",
@@ -339,25 +333,8 @@
                     "To improve, focus on deeper critical evaluation of evidence and refining thesis precision."
                 ].join(" ");
                 
-                let fullFeedback = feedbackParagraph;
-                
-                // Add rubric table if rubric is present
-                if (rubricFile) {
-                    const rubricTable = [
-                        "Criteria          | Score | Comments",
-                        "----------------------------------------",
-                        "Thesis Statement  | 3     | Clear but requires stronger academic framing",
-                        "Evidence Integration | 2   | Relevant sources but minimal critical analysis",
-                        "Citation Format   | 4     | Consistent and correct APA formatting",
-                        "----------------------------------------",
-                        "Final Score: 3.0 / 4.0"
-                    ].join("\n");
-                    
-                    fullFeedback += "\n\n" + rubricTable;
-                }
-                
-                feedbackArea.value = fullFeedback;
-                statusMessage.textContent = "Analysis complete! Rubric-aligned feedback generated.";
+                feedbackArea.value = feedbackText;
+                statusMessage.textContent = "Analysis complete! Feedback generated as requested.";
                 statusMessage.className = "status-message status-success";
             });
             
@@ -382,7 +359,6 @@
             // Clear functionality
             clearBtn.addEventListener('click', function() {
                 document.getElementById('assignment').value = '';
-                document.getElementById('rubric').value = '';
                 feedbackArea.value = '';
                 document.getElementById('supportQuery').value = '';
                 supportResponse.textContent = "Assessment guidance will appear here...";
