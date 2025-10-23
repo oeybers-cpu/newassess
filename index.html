@@ -1,1 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALL 124 Assess - Academic Literacy Evaluator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        header {
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 1.5rem;
+        }
+        
+        .upload-section {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .upload-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        .upload-input {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+            color: #ccc;
+        }
+        
+        input[type="file"] {
+            background-color: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 0.8rem;
+            border-radius: 4px;
+            width: 100%;
+        }
+        
+        .feedback-section {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .feedback-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            background-color: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        button {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        button:hover {
+            background-color: #444;
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            text-align: left;
+            min-height: 60px;
+        }
+        
+        .status-message {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .status-success {
+            color: #0f0;
+        }
+        
+        .status-error {
+            color: #f00;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        @media (max-width: 600px) {
+            .action-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ALL 124 Assess</h1>
+            <p class="subtitle">Academic Literacy Assignment Evaluator</p>
+        </header>
+        
+        <div class="upload-section">
+            <div class="upload-title">Upload Assignment Materials</div>
+            
+            <div class="upload-input">
+                <label for="assignment">Assignment Text</label>
+                <input type="file" id="assignment" accept=".txt,.doc,.docx">
+            </div>
+            
+            <div class="upload-input">
+                <label for="rubric">Rubric</label>
+                <input type="file" id="rubric" accept=".txt,.pdf,.doc,.docx">
+            </div>
+        </div>
+        
+        <div class="feedback-section">
+            <div class="feedback-title">Feedback</div>
+            <textarea id="feedback" placeholder="Enter your assessment feedback here..."></textarea>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="analyzeBtn">Analyze Assignment</button>
+            <button id="saveBtn">Save Feedback</button>
+            <button id="clearBtn">Clear All</button>
+        </div>
+        
+        <div class="status">
+            <div id="statusMessage" class="status-message">Ready to analyze assignment</div>
+        </div>
+        
+        <div class="footer">
+            ALL 124 Assess v1.0 | Academic Literacy Evaluation System
+        </div>
+    </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            // Simulate analysis functionality
+            analyzeBtn.addEventListener('click', function() {
+                const assignmentFile = document.getElementById('assignment').files[0];
+                const rubricFile = document.getElementById('rubric').files[0];
+                
+                if (!assignmentFile) {
+                    statusMessage.textContent = "Error: Please upload an assignment text file";
+                    statusMessage.className = "status-message status-error";
+                    return;
+                }
+                
+                if (!rubricFile) {
+                    statusMessage.textContent = "Error: Please upload a rubric file";
+                    statusMessage.className = "status-message status-error";
+                    return;
+                }
+                
+                // Simulate analysis process
+                statusMessage.textContent = "Analyzing assignment... Please wait";
+                statusMessage.className = "status-message";
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // Simulated analysis results
+                    const feedbackText = "Assignment analysis complete. Key observations:\n\n" +
+                        "- Thesis statement is clear and well-defined\n" +
+                        "- Evidence is relevant but needs deeper analysis\n" +
+                        "- Citation format has minor inconsistencies\n" +
+                        "- Overall academic literacy meets standards with minor improvements needed";
+                    
+                    document.getElementById('feedback').value = feedbackText;
+                    statusMessage.textContent = "Analysis complete! Feedback generated.";
+                    statusMessage.className = "status-message status-success";
+                }, 1500);
+            });
+            
+            // Simulate save functionality
+            saveBtn.addEventListener('click', function() {
+                const feedback = document.getElementById('feedback').value.trim();
+                if (!feedback) {
+                    statusMessage.textContent = "Error: No feedback to save";
+                    statusMessage.className = "status-message status-error";
+                    return;
+                }
+                
+                statusMessage.textContent = "Saving feedback... Please wait";
+                statusMessage.className = "status-message";
+                
+                setTimeout(() => {
+                    statusMessage.textContent = "Feedback saved successfully!";
+                    statusMessage.className = "status-message status-success";
+                }, 1000);
+            });
+            
+            // Clear functionality
+            clearBtn.addEventListener('click', function() {
+                document.getElementById('assignment').value = '';
+                document.getElementById('rubric').value = '';
+                document.getElementById('feedback').value = '';
+                statusMessage.textContent = "All fields cleared. Ready for new analysis";
+                statusMessage.className = "status-message";
+            });
+        });
+    </script>
+</body>
+</html>
