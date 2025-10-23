@@ -127,7 +127,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 1rem;
-            transition: all 0.2s;
+            transition: background-color 0.2s, transform 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -139,6 +139,14 @@
         
         button:active {
             transform: translateY(1px);
+        }
+
+        /* Style for disabled buttons */
+        button:disabled {
+            background-color: #222;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
         }
         
         button#analyzeBtn::before {
@@ -169,11 +177,11 @@
         }
         
         .status-success {
-            color: #0f0;
+            color: #2ecc71; /* A slightly softer green */
         }
         
         .status-error {
-            color: #f00;
+            color: #e74c3c; /* A softer red */
         }
         
         .footer {
@@ -190,6 +198,7 @@
             
             button {
                 width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -206,7 +215,7 @@
             
             <div class="upload-input">
                 <label for="assignmentFile">Student Assignment (File)</label>
-                <input type="file" id="assignmentFile" accept=".txt,.doc,.docx">
+                <input type="file" id="assignmentFile" accept=".txt,.doc,.docx,.pdf">
             </div>
             
             <div class="upload-input">
@@ -245,84 +254,7 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const analyzeBtn = document.getElementById('analyzeBtn');
-            const saveBtn = document.getElementById('saveBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const statusMessage = document.getElementById('statusMessage');
-            const feedbackArea = document.getElementById('feedback');
-            
-            // Function to adjust textarea height to fit content
-            function adjustTextareaHeight(textarea) {
-                textarea.style.height = 'auto';
-                textarea.style.height = textarea.scrollHeight + 'px';
-            }
-            
-            // Adjust feedback textarea height on initial load
-            adjustTextareaHeight(feedbackArea);
-            
-            // Simulate analysis functionality
-            analyzeBtn.addEventListener('click', function() {
-                const assignmentFile = document.getElementById('assignmentFile').files[0];
-                const assignmentText = document.getElementById('assignmentText').value.trim();
-                
-                if (!assignmentFile && !assignmentText) {
-                    statusMessage.textContent = "Error: Please provide student assignment (upload file or paste text)";
-                    statusMessage.className = "status-message status-error";
-                    return;
-                }
-                
-                // Generate 10-sentence coherent paragraph (exactly 10 sentences)
-                const feedbackText = [
-                    "The assignment demonstrates a clear understanding of the topic with a well-defined thesis statement.",
-                    "However, the thesis could be strengthened with more precise academic framing and specific claims.",
-                    "Evidence integration shows relevance but lacks critical analysis of sources.",
-                    "Sources are appropriately chosen but require deeper engagement and evaluation.",
-                    "Citation format follows APA guidelines consistently throughout the document.",
-                    "The paper structure is logical and easy to follow with clear section transitions.",
-                    "Counter-arguments are addressed but could be more thoroughly examined.",
-                    "The conclusion effectively summarizes key points without introducing new information.",
-                    "Overall, the work meets basic academic requirements for the assignment.",
-                    "To improve, focus on deeper critical evaluation of evidence and refining thesis precision."
-                ].join(" ");
-                
-                feedbackArea.value = feedbackText;
-                adjustTextareaHeight(feedbackArea); // Adjust height to fit content
-                statusMessage.textContent = "Analysis complete! Feedback generated as requested.";
-                statusMessage.className = "status-message status-success";
-            });
-            
-            // Simulate save functionality
-            saveBtn.addEventListener('click', function() {
-                const feedback = feedbackArea.value.trim();
-                if (!feedback) {
-                    statusMessage.textContent = "Error: No feedback to save";
-                    statusMessage.className = "status-message status-error";
-                    return;
-                }
-                
-                statusMessage.textContent = "Saving assessment feedback...";
-                statusMessage.className = "status-message";
-                
-                setTimeout(() => {
-                    statusMessage.textContent = "Feedback saved to assessment portfolio";
-                    statusMessage.className = "status-message status-success";
-                }, 1000);
-            });
-            
-            // Clear functionality
-            clearBtn.addEventListener('click', function() {
-                document.getElementById('assignmentFile').value = '';
-                document.getElementById('assignmentText').value = '';
-                document.getElementById('rubricFile').value = '';
-                document.getElementById('manualCriteria').value = '';
-                feedbackArea.value = '';
-                adjustTextareaHeight(feedbackArea); // Reset to minimum height
-                statusMessage.textContent = "All fields cleared. Ready for new assessment";
-                statusMessage.className = "status-message";
-            });
-        });
-    </script>
+    <!-- All JavaScript is now in an external file -->
+    <script src="app.js" defer></script>
 </body>
 </html>
