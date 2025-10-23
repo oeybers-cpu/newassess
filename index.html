@@ -83,6 +83,52 @@
             width: 100%;
         }
         
+        .query-section {
+            background-color: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .query-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .query-title::before {
+            content: "🤖";
+            font-size: 1.4rem;
+        }
+        
+        .query-input {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 1.5rem;
+        }
+        
+        .query-response {
+            background-color: #0d0d0d;
+            border: 1px solid #222;
+            border-radius: 6px;
+            padding: 1rem;
+            min-height: 100px;
+            margin-top: 1rem;
+            line-height: 1.6;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        
+        .query-response::before {
+            content: "➡️";
+            margin-right: 8px;
+        }
+        
         .feedback-section {
             background-color: #111;
             border: 1px solid #333;
@@ -126,6 +172,9 @@
             cursor: pointer;
             font-size: 1rem;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         button:hover {
@@ -134,6 +183,22 @@
         
         button:active {
             transform: translateY(1px);
+        }
+        
+        button#analyzeBtn::before {
+            content: "🔍";
+        }
+        
+        button#saveBtn::before {
+            content: "💾";
+        }
+        
+        button#clearBtn::before {
+            content: "🧹";
+        }
+        
+        button#queryBtn::before {
+            content: "💬";
         }
         
         .status {
@@ -198,9 +263,27 @@
             </div>
         </div>
         
+        <div class="query-section">
+            <div class="query-title">Agent Query</div>
+            
+            <div class="query-input">
+                <label for="query">Ask the agent about your assignment or request assistance</label>
+                <textarea id="query" placeholder="Example: 'How can I improve my thesis statement?' or 'What are common mistakes in academic writing?'" 
+                          style="height: 100px; resize: vertical;"></textarea>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="queryBtn">Send Query</button>
+            </div>
+            
+            <div class="query-response" id="queryResponse">
+                Your query will appear here...
+            </div>
+        </div>
+        
         <div class="feedback-section">
             <div class="feedback-title">Feedback</div>
-            <textarea id="feedback" placeholder="Enter your assessment feedback here..."></textarea>
+            <textarea id="feedback" placeholder="Assignment feedback will appear here..."></textarea>
         </div>
         
         <div class="action-buttons">
@@ -210,7 +293,7 @@
         </div>
         
         <div class="status">
-            <div id="statusMessage" class="status-message">Ready to analyze assignment</div>
+            <div id="statusMessage" class="status-message">Ready to analyze assignment or send query</div>
         </div>
         
         <div class="footer">
@@ -223,7 +306,9 @@
             const analyzeBtn = document.getElementById('analyzeBtn');
             const saveBtn = document.getElementById('saveBtn');
             const clearBtn = document.getElementById('clearBtn');
+            const queryBtn = document.getElementById('queryBtn');
             const statusMessage = document.getElementById('statusMessage');
+            const queryResponse = document.getElementById('queryResponse');
             
             // Simulate analysis functionality
             analyzeBtn.addEventListener('click', function() {
@@ -284,8 +369,41 @@
                 document.getElementById('assignment').value = '';
                 document.getElementById('rubric').value = '';
                 document.getElementById('feedback').value = '';
+                document.getElementById('query').value = '';
+                queryResponse.textContent = "Your query will appear here...";
                 statusMessage.textContent = "All fields cleared. Ready for new analysis";
                 statusMessage.className = "status-message";
+            });
+            
+            // Query functionality
+            queryBtn.addEventListener('click', function() {
+                const queryText = document.getElementById('query').value.trim();
+                if (!queryText) {
+                    statusMessage.textContent = "Error: Please enter a query";
+                    statusMessage.className = "status-message status-error";
+                    return;
+                }
+                
+                statusMessage.textContent = "Processing your query...";
+                statusMessage.className = "status-message";
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // Simulated query response
+                    const responseText = "Thank you for your query! Here's some academic writing guidance:\n\n" +
+                        "Thesis statements should be:\n" +
+                        "• Specific and arguable\n" +
+                        "• Positioned at the end of your introduction\n" +
+                        "• Supported by evidence throughout your paper\n\n" +
+                        "Common mistakes to avoid:\n" +
+                        "• Vague or broad statements\n" +
+                        "• Statements that are merely factual\n" +
+                        "• Unsupported claims";
+                    
+                    queryResponse.textContent = responseText;
+                    statusMessage.textContent = "Query processed successfully!";
+                    statusMessage.className = "status-message status-success";
+                }, 1500);
             });
         });
     </script>
