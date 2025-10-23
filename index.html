@@ -83,7 +83,7 @@
             width: 100%;
         }
         
-        .query-section {
+        .assessment-support {
             background-color: #111;
             border: 1px solid #333;
             border-radius: 8px;
@@ -92,7 +92,7 @@
             text-align: left;
         }
         
-        .query-title {
+        .support-title {
             font-size: 1.2rem;
             margin-bottom: 1rem;
             color: #fff;
@@ -101,18 +101,19 @@
             gap: 10px;
         }
         
-        .query-title::before {
-            content: "🤖";
+        .support-title::before {
+            content: "🎓";
             font-size: 1.4rem;
+            color: #00c1d4;
         }
         
-        .query-input {
+        .support-input {
             display: flex;
             flex-direction: column;
             margin-bottom: 1.5rem;
         }
         
-        .query-response {
+        .support-response {
             background-color: #0d0d0d;
             border: 1px solid #222;
             border-radius: 6px;
@@ -120,13 +121,15 @@
             min-height: 100px;
             margin-top: 1rem;
             line-height: 1.6;
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             white-space: pre-wrap;
+            border-left: 3px solid #00c1d4;
         }
         
-        .query-response::before {
-            content: "➡️";
+        .support-response::before {
+            content: "ℹ️";
             margin-right: 8px;
+            color: #00c1d4;
         }
         
         .feedback-section {
@@ -197,8 +200,8 @@
             content: "🧹";
         }
         
-        button#queryBtn::before {
-            content: "💬";
+        button#supportBtn::before {
+            content: "❓";
         }
         
         .status {
@@ -246,44 +249,44 @@
     <div class="container">
         <header>
             <h1>ALL 124 Assess</h1>
-            <p class="subtitle">Academic Literacy Assignment Evaluator</p>
+            <p class="subtitle">Academic Literacy Assignment Evaluator for Educators</p>
         </header>
         
         <div class="upload-section">
             <div class="upload-title">Upload Assignment Materials</div>
             
             <div class="upload-input">
-                <label for="assignment">Assignment Text</label>
+                <label for="assignment">Student Assignment</label>
                 <input type="file" id="assignment" accept=".txt,.doc,.docx">
             </div>
             
             <div class="upload-input">
-                <label for="rubric">Rubric</label>
+                <label for="rubric">Course Rubric</label>
                 <input type="file" id="rubric" accept=".txt,.pdf,.doc,.docx">
             </div>
         </div>
         
-        <div class="query-section">
-            <div class="query-title">Agent Query</div>
+        <div class="assessment-support">
+            <div class="support-title">Assessment Support</div>
             
-            <div class="query-input">
-                <label for="query">Ask the agent about your assignment or request assistance</label>
-                <textarea id="query" placeholder="Example: 'How can I improve my thesis statement?' or 'What are common mistakes in academic writing?'" 
+            <div class="support-input">
+                <label for="supportQuery">Ask for expert guidance on grading, rubric application, or academic standards</label>
+                <textarea id="supportQuery" placeholder="Example: 'How to evaluate thesis statements at Level 3?', 'Common citation errors in student submissions', 'Best practices for feedback on evidence integration'" 
                           style="height: 100px; resize: vertical;"></textarea>
             </div>
             
             <div class="action-buttons">
-                <button id="queryBtn">Send Query</button>
+                <button id="supportBtn">Get Assessment Guidance</button>
             </div>
             
-            <div class="query-response" id="queryResponse">
-                Your query will appear here...
+            <div class="support-response" id="supportResponse">
+                Assessment guidance will appear here...
             </div>
         </div>
         
         <div class="feedback-section">
-            <div class="feedback-title">Feedback</div>
-            <textarea id="feedback" placeholder="Assignment feedback will appear here..."></textarea>
+            <div class="feedback-title">Formal Feedback</div>
+            <textarea id="feedback" placeholder="Your assessment feedback will be generated here..."></textarea>
         </div>
         
         <div class="action-buttons">
@@ -293,11 +296,11 @@
         </div>
         
         <div class="status">
-            <div id="statusMessage" class="status-message">Ready to analyze assignment or send query</div>
+            <div id="statusMessage" class="status-message">Ready for assessment support or assignment analysis</div>
         </div>
         
         <div class="footer">
-            ALL 124 Assess v1.0 | Academic Literacy Evaluation System
+            ALL 124 Assess v1.0 | Academic Literacy Evaluation System for Educators
         </div>
     </div>
 
@@ -306,9 +309,9 @@
             const analyzeBtn = document.getElementById('analyzeBtn');
             const saveBtn = document.getElementById('saveBtn');
             const clearBtn = document.getElementById('clearBtn');
-            const queryBtn = document.getElementById('queryBtn');
+            const supportBtn = document.getElementById('supportBtn');
             const statusMessage = document.getElementById('statusMessage');
-            const queryResponse = document.getElementById('queryResponse');
+            const supportResponse = document.getElementById('supportResponse');
             
             // Simulate analysis functionality
             analyzeBtn.addEventListener('click', function() {
@@ -316,32 +319,37 @@
                 const rubricFile = document.getElementById('rubric').files[0];
                 
                 if (!assignmentFile) {
-                    statusMessage.textContent = "Error: Please upload an assignment text file";
+                    statusMessage.textContent = "Error: Please upload a student assignment file";
                     statusMessage.className = "status-message status-error";
                     return;
                 }
                 
                 if (!rubricFile) {
-                    statusMessage.textContent = "Error: Please upload a rubric file";
+                    statusMessage.textContent = "Error: Please upload the course rubric";
                     statusMessage.className = "status-message status-error";
                     return;
                 }
                 
                 // Simulate analysis process
-                statusMessage.textContent = "Analyzing assignment... Please wait";
+                statusMessage.textContent = "Analyzing assignment against rubric... Please wait";
                 statusMessage.className = "status-message";
                 
                 // Simulate API call delay
                 setTimeout(() => {
-                    // Simulated analysis results
-                    const feedbackText = "Assignment analysis complete. Key observations:\n\n" +
-                        "- Thesis statement is clear and well-defined\n" +
-                        "- Evidence is relevant but needs deeper analysis\n" +
-                        "- Citation format has minor inconsistencies\n" +
-                        "- Overall academic literacy meets standards with minor improvements needed";
+                    // Simulated analysis results - professional assessment feedback
+                    const feedbackText = "ASSIGNMENT ASSESSMENT REPORT\n\n" +
+                        "Thesis Statement: \n" +
+                        "  • Level 3: Clear but lacks specific academic framing\n" +
+                        "  • Recommendation: Strengthen connection to course concepts\n\n" +
+                        "Evidence Integration: \n" +
+                        "  • Level 2: Relevant sources but minimal analysis\n" +
+                        "  • Recommendation: Add critical evaluation of sources\n\n" +
+                        "Citation Format: \n" +
+                        "  • Level 4: Consistent APA formatting\n\n" +
+                        "Overall: Meets minimum standards but requires deeper critical analysis";
                     
                     document.getElementById('feedback').value = feedbackText;
-                    statusMessage.textContent = "Analysis complete! Feedback generated.";
+                    statusMessage.textContent = "Analysis complete! Rubric-aligned feedback generated.";
                     statusMessage.className = "status-message status-success";
                 }, 1500);
             });
@@ -355,11 +363,11 @@
                     return;
                 }
                 
-                statusMessage.textContent = "Saving feedback... Please wait";
+                statusMessage.textContent = "Saving assessment feedback...";
                 statusMessage.className = "status-message";
                 
                 setTimeout(() => {
-                    statusMessage.textContent = "Feedback saved successfully!";
+                    statusMessage.textContent = "Feedback saved to assessment portfolio";
                     statusMessage.className = "status-message status-success";
                 }, 1000);
             });
@@ -369,39 +377,41 @@
                 document.getElementById('assignment').value = '';
                 document.getElementById('rubric').value = '';
                 document.getElementById('feedback').value = '';
-                document.getElementById('query').value = '';
-                queryResponse.textContent = "Your query will appear here...";
-                statusMessage.textContent = "All fields cleared. Ready for new analysis";
+                document.getElementById('supportQuery').value = '';
+                supportResponse.textContent = "Assessment guidance will appear here...";
+                statusMessage.textContent = "All fields cleared. Ready for new assessment";
                 statusMessage.className = "status-message";
             });
             
-            // Query functionality
-            queryBtn.addEventListener('click', function() {
-                const queryText = document.getElementById('query').value.trim();
+            // Assessment support functionality
+            supportBtn.addEventListener('click', function() {
+                const queryText = document.getElementById('supportQuery').value.trim();
                 if (!queryText) {
-                    statusMessage.textContent = "Error: Please enter a query";
+                    statusMessage.textContent = "Error: Please enter your assessment question";
                     statusMessage.className = "status-message status-error";
                     return;
                 }
                 
-                statusMessage.textContent = "Processing your query...";
+                statusMessage.textContent = "Processing your assessment query...";
                 statusMessage.className = "status-message";
                 
                 // Simulate API call delay
                 setTimeout(() => {
-                    // Simulated query response
-                    const responseText = "Thank you for your query! Here's some academic writing guidance:\n\n" +
-                        "Thesis statements should be:\n" +
-                        "• Specific and arguable\n" +
-                        "• Positioned at the end of your introduction\n" +
-                        "• Supported by evidence throughout your paper\n\n" +
-                        "Common mistakes to avoid:\n" +
-                        "• Vague or broad statements\n" +
-                        "• Statements that are merely factual\n" +
-                        "• Unsupported claims";
+                    // Simulated assessment guidance response
+                    const responseText = "ASSESSMENT GUIDANCE\n\n" +
+                        "On evaluating thesis statements:\n" +
+                        "• Level 4: Specific, arguable, and clearly positioned in introduction\n" +
+                        "• Level 3: Adequate but lacks academic precision\n" +
+                        "• Level 2: Vague or overly broad statement\n\n" +
+                        "Recommended feedback phrasing:\n" +
+                        "\"Your thesis identifies the topic but needs stronger academic framing. Consider: 'This paper argues that [specific claim] through analysis of [evidence], which challenges [counter-argument]'\"\n\n" +
+                        "For citation errors:\n" +
+                        "• 78% of students miss page numbers for direct quotes\n" +
+                        "• 65% inconsistently format in-text citations\n" +
+                        "• Recommendation: Use the 'Citation Checker' tool in our grading dashboard";
                     
-                    queryResponse.textContent = responseText;
-                    statusMessage.textContent = "Query processed successfully!";
+                    supportResponse.textContent = responseText;
+                    statusMessage.textContent = "Assessment guidance generated";
                     statusMessage.className = "status-message status-success";
                 }, 1500);
             });
