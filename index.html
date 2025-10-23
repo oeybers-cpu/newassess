@@ -155,7 +155,7 @@
             padding: 1rem;
             border-radius: 4px;
             resize: vertical;
-            font-family: inherit;
+            font-family: 'Courier New', monospace;
             font-size: 1rem;
         }
         
@@ -261,7 +261,7 @@
             </div>
             
             <div class="upload-input">
-                <label for="rubric">Course Rubric</label>
+                <label for="rubric">Course Rubric (optional)</label>
                 <input type="file" id="rubric" accept=".txt,.pdf,.doc,.docx">
             </div>
         </div>
@@ -312,6 +312,7 @@
             const supportBtn = document.getElementById('supportBtn');
             const statusMessage = document.getElementById('statusMessage');
             const supportResponse = document.getElementById('supportResponse');
+            const feedbackArea = document.getElementById('feedback');
             
             // Simulate analysis functionality
             analyzeBtn.addEventListener('click', function() {
@@ -324,39 +325,45 @@
                     return;
                 }
                 
-                if (!rubricFile) {
-                    statusMessage.textContent = "Error: Please upload the course rubric";
-                    statusMessage.className = "status-message status-error";
-                    return;
+                // Generate 10-sentence coherent paragraph
+                const feedbackParagraph = [
+                    "The assignment demonstrates a clear understanding of the topic with a well-defined thesis statement.",
+                    "However, the thesis could be strengthened with more precise academic framing and specific claims.",
+                    "Evidence integration shows relevance but lacks critical analysis of sources.",
+                    "Sources are appropriately chosen but require deeper engagement and evaluation.",
+                    "Citation format follows APA guidelines consistently throughout the document.",
+                    "The paper structure is logical and easy to follow with clear section transitions.",
+                    "Counter-arguments are addressed but could be more thoroughly examined.",
+                    "The conclusion effectively summarizes key points without introducing new information.",
+                    "Overall, the work meets basic academic requirements for the assignment.",
+                    "To improve, focus on deeper critical evaluation of evidence and refining thesis precision."
+                ].join(" ");
+                
+                let fullFeedback = feedbackParagraph;
+                
+                // Add rubric table if rubric is present
+                if (rubricFile) {
+                    const rubricTable = [
+                        "Criteria          | Score | Comments",
+                        "----------------------------------------",
+                        "Thesis Statement  | 3     | Clear but requires stronger academic framing",
+                        "Evidence Integration | 2   | Relevant sources but minimal critical analysis",
+                        "Citation Format   | 4     | Consistent and correct APA formatting",
+                        "----------------------------------------",
+                        "Final Score: 3.0 / 4.0"
+                    ].join("\n");
+                    
+                    fullFeedback += "\n\n" + rubricTable;
                 }
                 
-                // Simulate analysis process
-                statusMessage.textContent = "Analyzing assignment against rubric... Please wait";
-                statusMessage.className = "status-message";
-                
-                // Simulate API call delay
-                setTimeout(() => {
-                    // Simulated analysis results - professional assessment feedback
-                    const feedbackText = "ASSIGNMENT ASSESSMENT REPORT\n\n" +
-                        "Thesis Statement: \n" +
-                        "  • Level 3: Clear but lacks specific academic framing\n" +
-                        "  • Recommendation: Strengthen connection to course concepts\n\n" +
-                        "Evidence Integration: \n" +
-                        "  • Level 2: Relevant sources but minimal analysis\n" +
-                        "  • Recommendation: Add critical evaluation of sources\n\n" +
-                        "Citation Format: \n" +
-                        "  • Level 4: Consistent APA formatting\n\n" +
-                        "Overall: Meets minimum standards but requires deeper critical analysis";
-                    
-                    document.getElementById('feedback').value = feedbackText;
-                    statusMessage.textContent = "Analysis complete! Rubric-aligned feedback generated.";
-                    statusMessage.className = "status-message status-success";
-                }, 1500);
+                feedbackArea.value = fullFeedback;
+                statusMessage.textContent = "Analysis complete! Rubric-aligned feedback generated.";
+                statusMessage.className = "status-message status-success";
             });
             
             // Simulate save functionality
             saveBtn.addEventListener('click', function() {
-                const feedback = document.getElementById('feedback').value.trim();
+                const feedback = feedbackArea.value.trim();
                 if (!feedback) {
                     statusMessage.textContent = "Error: No feedback to save";
                     statusMessage.className = "status-message status-error";
@@ -376,7 +383,7 @@
             clearBtn.addEventListener('click', function() {
                 document.getElementById('assignment').value = '';
                 document.getElementById('rubric').value = '';
-                document.getElementById('feedback').value = '';
+                feedbackArea.value = '';
                 document.getElementById('supportQuery').value = '';
                 supportResponse.textContent = "Assessment guidance will appear here...";
                 statusMessage.textContent = "All fields cleared. Ready for new assessment";
@@ -397,7 +404,6 @@
                 
                 // Simulate API call delay
                 setTimeout(() => {
-                    // Simulated assessment guidance response
                     const responseText = "ASSESSMENT GUIDANCE\n\n" +
                         "On evaluating thesis statements:\n" +
                         "• Level 4: Specific, arguable, and clearly positioned in introduction\n" +
