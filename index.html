@@ -83,53 +83,17 @@
             width: 100%;
         }
         
-        .assessment-support {
-            background-color: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            text-align: left;
-        }
-        
-        .support-title {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .support-title::before {
-            content: "🎓";
-            font-size: 1.4rem;
-            color: #00c1d4;
-        }
-        
-        .support-input {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 1.5rem;
-        }
-        
-        .support-response {
-            background-color: #0d0d0d;
-            border: 1px solid #222;
-            border-radius: 6px;
-            padding: 1rem;
+        textarea {
+            width: 100%;
             min-height: 100px;
-            margin-top: 1rem;
-            line-height: 1.6;
+            background-color: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 4px;
+            resize: vertical;
             font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            border-left: 3px solid #00c1d4;
-        }
-        
-        .support-response::before {
-            content: "ℹ️";
-            margin-right: 8px;
-            color: #00c1d4;
+            font-size: 1rem;
         }
         
         .feedback-section {
@@ -144,19 +108,6 @@
             font-size: 1.2rem;
             margin-bottom: 1rem;
             color: #fff;
-        }
-        
-        textarea {
-            width: 100%;
-            height: 200px;
-            background-color: #222;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 1rem;
-            border-radius: 4px;
-            resize: vertical;
-            font-family: 'Courier New', monospace;
-            font-size: 1rem;
         }
         
         .action-buttons {
@@ -198,10 +149,6 @@
         
         button#clearBtn::before {
             content: "🧹";
-        }
-        
-        button#supportBtn::before {
-            content: "❓";
         }
         
         .status {
@@ -253,29 +200,26 @@
         </header>
         
         <div class="upload-section">
-            <div class="upload-title">Upload Assignment Materials</div>
+            <div class="upload-title">Assignment Materials</div>
             
             <div class="upload-input">
-                <label for="assignment">Student Assignment</label>
-                <input type="file" id="assignment" accept=".txt,.doc,.docx">
-            </div>
-        </div>
-        
-        <div class="assessment-support">
-            <div class="support-title">Assessment Support</div>
-            
-            <div class="support-input">
-                <label for="supportQuery">Ask for expert guidance on grading, rubric application, or academic standards</label>
-                <textarea id="supportQuery" placeholder="Example: 'How to evaluate thesis statements at Level 3?', 'Common citation errors in student submissions', 'Best practices for feedback on evidence integration'" 
-                          style="height: 100px; resize: vertical;"></textarea>
+                <label for="assignmentFile">Student Assignment (File)</label>
+                <input type="file" id="assignmentFile" accept=".txt,.doc,.docx">
             </div>
             
-            <div class="action-buttons">
-                <button id="supportBtn">Get Assessment Guidance</button>
+            <div class="upload-input">
+                <label for="assignmentText">Or paste assignment text</label>
+                <textarea id="assignmentText" placeholder="Paste assignment text here..."></textarea>
             </div>
             
-            <div class="support-response" id="supportResponse">
-                Assessment guidance will appear here...
+            <div class="upload-input">
+                <label for="rubricFile">Course Rubric (File, optional)</label>
+                <input type="file" id="rubricFile" accept=".txt,.pdf,.doc,.docx">
+            </div>
+            
+            <div class="upload-input">
+                <label for="manualCriteria">Manual Assessment Criteria (optional)</label>
+                <textarea id="manualCriteria" placeholder="Enter assessment criteria here..."></textarea>
             </div>
         </div>
         
@@ -291,7 +235,7 @@
         </div>
         
         <div class="status">
-            <div id="statusMessage" class="status-message">Ready for assessment support or assignment analysis</div>
+            <div id="statusMessage" class="status-message">Ready for assignment analysis</div>
         </div>
         
         <div class="footer">
@@ -304,17 +248,16 @@
             const analyzeBtn = document.getElementById('analyzeBtn');
             const saveBtn = document.getElementById('saveBtn');
             const clearBtn = document.getElementById('clearBtn');
-            const supportBtn = document.getElementById('supportBtn');
             const statusMessage = document.getElementById('statusMessage');
-            const supportResponse = document.getElementById('supportResponse');
             const feedbackArea = document.getElementById('feedback');
             
             // Simulate analysis functionality
             analyzeBtn.addEventListener('click', function() {
-                const assignmentFile = document.getElementById('assignment').files[0];
+                const assignmentFile = document.getElementById('assignmentFile').files[0];
+                const assignmentText = document.getElementById('assignmentText').value.trim();
                 
-                if (!assignmentFile) {
-                    statusMessage.textContent = "Error: Please upload a student assignment file";
+                if (!assignmentFile && !assignmentText) {
+                    statusMessage.textContent = "Error: Please provide student assignment (upload file or paste text)";
                     statusMessage.className = "status-message status-error";
                     return;
                 }
@@ -358,44 +301,13 @@
             
             // Clear functionality
             clearBtn.addEventListener('click', function() {
-                document.getElementById('assignment').value = '';
+                document.getElementById('assignmentFile').value = '';
+                document.getElementById('assignmentText').value = '';
+                document.getElementById('rubricFile').value = '';
+                document.getElementById('manualCriteria').value = '';
                 feedbackArea.value = '';
-                document.getElementById('supportQuery').value = '';
-                supportResponse.textContent = "Assessment guidance will appear here...";
                 statusMessage.textContent = "All fields cleared. Ready for new assessment";
                 statusMessage.className = "status-message";
-            });
-            
-            // Assessment support functionality
-            supportBtn.addEventListener('click', function() {
-                const queryText = document.getElementById('supportQuery').value.trim();
-                if (!queryText) {
-                    statusMessage.textContent = "Error: Please enter your assessment question";
-                    statusMessage.className = "status-message status-error";
-                    return;
-                }
-                
-                statusMessage.textContent = "Processing your assessment query...";
-                statusMessage.className = "status-message";
-                
-                // Simulate API call delay
-                setTimeout(() => {
-                    const responseText = "ASSESSMENT GUIDANCE\n\n" +
-                        "On evaluating thesis statements:\n" +
-                        "• Level 4: Specific, arguable, and clearly positioned in introduction\n" +
-                        "• Level 3: Adequate but lacks academic precision\n" +
-                        "• Level 2: Vague or overly broad statement\n\n" +
-                        "Recommended feedback phrasing:\n" +
-                        "\"Your thesis identifies the topic but needs stronger academic framing. Consider: 'This paper argues that [specific claim] through analysis of [evidence], which challenges [counter-argument]'\"\n\n" +
-                        "For citation errors:\n" +
-                        "• 78% of students miss page numbers for direct quotes\n" +
-                        "• 65% inconsistently format in-text citations\n" +
-                        "• Recommendation: Use the 'Citation Checker' tool in our grading dashboard";
-                    
-                    supportResponse.textContent = responseText;
-                    statusMessage.textContent = "Assessment guidance generated";
-                    statusMessage.className = "status-message status-success";
-                }, 1500);
             });
         });
     </script>
