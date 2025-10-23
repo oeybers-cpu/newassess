@@ -85,7 +85,8 @@
         
         textarea {
             width: 100%;
-            min-height: 100px;
+            height: auto;
+            min-height: 200px;
             background-color: #222;
             border: 1px solid #444;
             color: #fff;
@@ -94,6 +95,7 @@
             resize: vertical;
             font-family: 'Courier New', monospace;
             font-size: 1rem;
+            overflow: hidden;
         }
         
         .feedback-section {
@@ -251,6 +253,15 @@
             const statusMessage = document.getElementById('statusMessage');
             const feedbackArea = document.getElementById('feedback');
             
+            // Function to adjust textarea height to fit content
+            function adjustTextareaHeight(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            }
+            
+            // Adjust feedback textarea height on initial load
+            adjustTextareaHeight(feedbackArea);
+            
             // Simulate analysis functionality
             analyzeBtn.addEventListener('click', function() {
                 const assignmentFile = document.getElementById('assignmentFile').files[0];
@@ -277,6 +288,7 @@
                 ].join(" ");
                 
                 feedbackArea.value = feedbackText;
+                adjustTextareaHeight(feedbackArea); // Adjust height to fit content
                 statusMessage.textContent = "Analysis complete! Feedback generated as requested.";
                 statusMessage.className = "status-message status-success";
             });
@@ -306,6 +318,7 @@
                 document.getElementById('rubricFile').value = '';
                 document.getElementById('manualCriteria').value = '';
                 feedbackArea.value = '';
+                adjustTextareaHeight(feedbackArea); // Reset to minimum height
                 statusMessage.textContent = "All fields cleared. Ready for new assessment";
                 statusMessage.className = "status-message";
             });
